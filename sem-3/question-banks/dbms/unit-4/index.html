@@ -1,0 +1,529 @@
+<!doctype html>
+<html lang="en" data-root="../../../../">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#111111">
+<meta name="description" content="Unit 4: SQL and PL/SQL Concepts. DBMS question bank with exam-style answers.">
+<title>Unit 4 – DBMS Notes</title>
+<script>try{var t=localStorage.getItem("theme");document.documentElement.setAttribute("data-theme",t||"dark")}catch(e){document.documentElement.setAttribute("data-theme","dark")}</script>
+<link rel="stylesheet" href="../../../../assets/style.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to Content</a>
+<header class="nav">
+  <button class="burger" aria-label="Menu" type="button"><span></span><span></span><span></span></button>
+  <a class="logo" href="../../../../"><strong>DBMS Notes</strong></a>
+  <div class="spacer"></div>
+  <button class="searchbtn" type="button" aria-label="Search"><span>Search…</span><kbd>Ctrl K</kbd></button>
+  <button class="themebtn" type="button" aria-label="Toggle theme"><span class="t-dark">Dark</span><span class="t-light">Light</span></button>
+</header>
+<div class="shell">
+  <aside class="sidebar" aria-label="Site navigation"><a class="top" href="../../../../">Welcome</a><details open><summary><a href="../../../">Semester 3</a></summary><details open><summary><a href="../../">Question Banks</a></summary><details open><summary><a href="../">Database Management System</a></summary><ul><li><a href="../unit-1/">Unit 1</a></li><li><a href="../unit-2/">Unit 2</a></li><li><a href="../unit-3/">Unit 3</a></li><li><a href="./" class="active" aria-current="page">Unit 4</a></li></ul></details></details></details></aside>
+  <main id="main">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="../../../">Semester 3</a><span class="sep">/</span><a href="../../">Question Banks</a><span class="sep">/</span><a href="../">Database Management System</a><span class="sep">/</span><span>Unit 4</span></nav>
+    <article>
+<h1>Unit 4</h1><p class="lead">SQL and PL/SQL Concepts</p><h2 id="part-a-sql-concepts" class="part">Part A: SQL Concepts<a href="#part-a-sql-concepts" class="anchor" aria-label="Permalink for this section"></a></h2>
+<h2 id="1-define-1-primary-key-2-foreign-key-3-unique-key-4-not-null-5-commit-6-candidat">1) Define: (1) Primary key (2) Foreign key (3) Unique Key (4) Not null (5) Commit (6) Candidate key (7) Rollback.<a href="#1-define-1-primary-key-2-foreign-key-3-unique-key-4-not-null-5-commit-6-candidat" class="anchor" aria-label="Permalink for this section"></a></h2>
+<ul><li><strong>Primary key:</strong> A column (or set of columns) that uniquely identifies each row of a table. It cannot contain NULL or duplicate values and a table has only one primary key. Example: <code>rollno INT PRIMARY KEY</code>.</li><li><strong>Foreign key:</strong> A column in one table that refers to the primary key (or unique key) of another table. It enforces <em>referential integrity</em>, so the value must exist in the parent table or be NULL. Example: <code>dept_id REFERENCES Dept(dept_id)</code>.</li><li><strong>Unique key:</strong> A constraint that ensures all values in a column are different. Unlike a primary key it allows NULL (in most DBMS) and a table can have many unique keys. Example: <code>email VARCHAR(50) UNIQUE</code>.</li><li><strong>Not null:</strong> A constraint that does not allow a column to hold NULL; a value must always be supplied. Example: <code>name VARCHAR(30) NOT NULL</code>.</li><li><strong>Commit:</strong> A TCL command that permanently saves all changes made by the current transaction to the database and makes them visible to other users.</li><li><strong>Candidate key:</strong> A minimal set of attributes that can uniquely identify a row. A table may have several candidate keys; one is chosen as the primary key and the rest are alternate keys. Example: in Student, both <em>rollno</em> and <em>email</em> may be candidate keys.</li><li><strong>Rollback:</strong> A TCL command that undoes all changes made since the last COMMIT (or up to a SAVEPOINT), restoring the database to its earlier consistent state.</li></ul>
+<h2 id="2-define-1-weak-entity-2-data-dictionary-3-substring-4-dual-5-alter-6-truncate-7">2) Define: (1) Weak entity (2) Data Dictionary (3) Substring( ) (4) Dual (5) Alter (6) Truncate (7) Drop.<a href="#2-define-1-weak-entity-2-data-dictionary-3-substring-4-dual-5-alter-6-truncate-7" class="anchor" aria-label="Permalink for this section"></a></h2>
+<ul><li><strong>Weak entity:</strong> An entity that does not have enough attributes to form a primary key of its own and depends on a strong (owner) entity through an identifying relationship. It has a partial key (discriminator) and is shown by a double rectangle in the ER diagram. Example: Dependent of an Employee.</li><li><strong>Data dictionary:</strong> A set of system-maintained tables that store <em>metadata</em> (data about data): table names, columns, data types, constraints, users, privileges, indexes and views. Example in Oracle: <code>USER_TABLES, USER_TAB_COLUMNS</code>.</li><li><strong>Substring( ):</strong> A string function that extracts part of a string from a given starting position for a given length. Syntax: <code>SUBSTR(string, start, length)</code>. Example: <code>SUBSTR('DATABASE',1,4)</code> gives DATA.</li><li><strong>Dual:</strong> A one-row, one-column dummy table in Oracle, used to evaluate expressions or functions that do not need a real table. Example: <code>SELECT SYSDATE FROM DUAL;</code></li><li><strong>Alter:</strong> A DDL command that changes the structure of an existing table: add, modify or drop columns or constraints. Example: <code>ALTER TABLE Emp ADD phone VARCHAR(15);</code></li><li><strong>Truncate:</strong> A DDL command that removes <strong>all rows</strong> from a table quickly, keeping its structure. It cannot be rolled back and has no WHERE clause. Example: <code>TRUNCATE TABLE Emp;</code></li><li><strong>Drop:</strong> A DDL command that deletes the whole table (structure, data, indexes and constraints) permanently from the database. Example: <code>DROP TABLE Emp;</code></li></ul>
+<h2 id="3-what-is-on-delete-cascade-in-sql-explain-clearly-with-example">3) What is ON DELETE CASCADE in SQL? Explain clearly with example.<a href="#3-what-is-on-delete-cascade-in-sql-explain-clearly-with-example" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p><strong>ON DELETE CASCADE</strong> is an option of a FOREIGN KEY constraint. When a row in the <strong>parent</strong> table is deleted, all the matching rows in the <strong>child</strong> table that refer to it through the foreign key are <strong>automatically deleted</strong>. It keeps referential integrity without deleting the child rows manually. Without it, deleting a parent row that is still referenced gives an error.</p>
+<div class="codewrap"><pre><code>CREATE TABLE Dept (
+  dept_id   INT PRIMARY KEY,
+  dept_name VARCHAR(20)
+);
+CREATE TABLE Emp (
+  emp_id   INT PRIMARY KEY,
+  emp_name VARCHAR(20),
+  dept_id  INT,
+  FOREIGN KEY (dept_id) REFERENCES Dept(dept_id)
+           ON DELETE CASCADE
+);</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<div class="tablewrap"><table><thead><tr><th><strong>Dept (parent)</strong></th><th><strong>Emp (child)</strong></th></tr></thead><tbody><tr><td><code>10 Sales</code><br><code>20 HR</code></td><td><code>1 Ravi (10)</code><br><code>2 Meena (10)</code><br><code>3 John (20)</code></td></tr></tbody></table></div>
+<div class="codewrap"><pre><code>DELETE FROM Dept WHERE dept_id = 10;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<p><strong>Result:</strong> Dept row 10 is deleted and Emp rows Ravi and Meena (dept_id = 10) are deleted automatically. Only John remains.</p>
+<p><strong>Related options:</strong> ON DELETE SET NULL (child foreign key becomes NULL) and ON DELETE RESTRICT / NO ACTION (delete not allowed while child rows exist).</p>
+<h2 id="4-what-is-a-join-explain-various-types-of-joins-with-example">4) What is a join? Explain various types of joins with example.<a href="#4-what-is-a-join-explain-various-types-of-joins-with-example" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p>A <strong>join</strong> combines rows from two or more tables based on a related column (usually primary key and foreign key) so that data stored in separate tables can be retrieved together in one result.</p>
+<p>Sample tables used for all examples:</p>
+<p class="tbl-title"><strong>Emp</strong></p>
+<div class="tablewrap"><table><thead><tr><th><strong>eid</strong></th><th><strong>ename</strong></th><th><strong>did</strong></th></tr></thead><tbody><tr><td>1</td><td>Ravi</td><td>10</td></tr><tr><td>2</td><td>Meena</td><td>20</td></tr><tr><td>3</td><td>John</td><td>NULL</td></tr></tbody></table></div>
+<p class="tbl-title"><strong>Dept</strong></p>
+<div class="tablewrap"><table><thead><tr><th><strong>did</strong></th><th><strong>dname</strong></th></tr></thead><tbody><tr><td>10</td><td>Sales</td></tr><tr><td>20</td><td>HR</td></tr><tr><td>30</td><td>IT</td></tr></tbody></table></div>
+<h3 id="1-inner-join-equi-join">1. Inner Join (Equi join)<a href="#1-inner-join-equi-join" class="anchor" aria-label="Permalink for this section"></a></h3>
+<p>Returns only rows that have matching values in both tables.</p>
+<div class="codewrap"><pre><code>SELECT e.ename, d.dname
+FROM Emp e INNER JOIN Dept d ON e.did = d.did;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<div class="tablewrap"><table><thead><tr><th><strong>ename</strong></th><th><strong>dname</strong></th></tr></thead><tbody><tr><td>Ravi</td><td>Sales</td></tr><tr><td>Meena</td><td>HR</td></tr></tbody></table></div>
+<h3 id="2-left-outer-join">2. Left Outer Join<a href="#2-left-outer-join" class="anchor" aria-label="Permalink for this section"></a></h3>
+<p>Returns all rows of the left table and matching rows of the right table; unmatched right values are NULL.</p>
+<div class="codewrap"><pre><code>SELECT e.ename, d.dname
+FROM Emp e LEFT OUTER JOIN Dept d ON e.did = d.did;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<div class="tablewrap"><table><thead><tr><th><strong>ename</strong></th><th><strong>dname</strong></th></tr></thead><tbody><tr><td>Ravi</td><td>Sales</td></tr><tr><td>Meena</td><td>HR</td></tr><tr><td>John</td><td>NULL</td></tr></tbody></table></div>
+<h3 id="3-right-outer-join">3. Right Outer Join<a href="#3-right-outer-join" class="anchor" aria-label="Permalink for this section"></a></h3>
+<p>Returns all rows of the right table and matching rows of the left table; unmatched left values are NULL.</p>
+<div class="codewrap"><pre><code>SELECT e.ename, d.dname
+FROM Emp e RIGHT OUTER JOIN Dept d ON e.did = d.did;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<div class="tablewrap"><table><thead><tr><th><strong>ename</strong></th><th><strong>dname</strong></th></tr></thead><tbody><tr><td>Ravi</td><td>Sales</td></tr><tr><td>Meena</td><td>HR</td></tr><tr><td>NULL</td><td>IT</td></tr></tbody></table></div>
+<h3 id="4-full-outer-join">4. Full Outer Join<a href="#4-full-outer-join" class="anchor" aria-label="Permalink for this section"></a></h3>
+<p>Returns all rows from both tables, with NULL where there is no match (result of left and right outer joins together).</p>
+<div class="codewrap"><pre><code>SELECT e.ename, d.dname
+FROM Emp e FULL OUTER JOIN Dept d ON e.did = d.did;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<div class="tablewrap"><table><thead><tr><th><strong>ename</strong></th><th><strong>dname</strong></th></tr></thead><tbody><tr><td>Ravi</td><td>Sales</td></tr><tr><td>Meena</td><td>HR</td></tr><tr><td>John</td><td>NULL</td></tr><tr><td>NULL</td><td>IT</td></tr></tbody></table></div>
+<h3 id="5-cross-join-cartesian-product">5. Cross Join (Cartesian product)<a href="#5-cross-join-cartesian-product" class="anchor" aria-label="Permalink for this section"></a></h3>
+<p>Pairs every row of the first table with every row of the second, so 3 x 3 = 9 rows, with no join condition.</p>
+<div class="codewrap"><pre><code>SELECT e.ename, d.dname FROM Emp e CROSS JOIN Dept d;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="6-self-join">6. Self Join<a href="#6-self-join" class="anchor" aria-label="Permalink for this section"></a></h3>
+<p>A table is joined with itself using aliases, e.g., to list employees with their managers.</p>
+<div class="codewrap"><pre><code>SELECT e.ename AS employee, m.ename AS manager
+FROM Emp e JOIN Emp m ON e.mgr = m.eid;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="7-natural-join">7. Natural Join<a href="#7-natural-join" class="anchor" aria-label="Permalink for this section"></a></h3>
+<p>Joins automatically on all columns having the same name in both tables (see Q5).</p>
+<h2 id="5-explain-natural-join-operation-with-example">5) Explain natural join operation with example.<a href="#5-explain-natural-join-operation-with-example" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p>A <strong>natural join</strong> joins two tables automatically on <strong>all columns with the same name and</strong> <strong>compatible data type</strong>. No ON condition is written, and the common column appears <strong>only once</strong> in the result. It is equal to an inner join on the common columns followed by removal of the duplicate column. In relational algebra it is denoted by the natural join symbol between R and S.</p>
+<p><strong>Syntax:</strong></p>
+<div class="codewrap"><pre><code>SELECT * FROM table1 NATURAL JOIN table2;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<p class="tbl-title"><strong>Student</strong></p>
+<div class="tablewrap"><table><thead><tr><th><strong>roll</strong></th><th><strong>name</strong></th><th><strong>did</strong></th></tr></thead><tbody><tr><td>1</td><td>Amit</td><td>10</td></tr><tr><td>2</td><td>Neha</td><td>20</td></tr><tr><td>3</td><td>Karan</td><td>30</td></tr></tbody></table></div>
+<p class="tbl-title"><strong>Dept</strong></p>
+<div class="tablewrap"><table><thead><tr><th><strong>did</strong></th><th><strong>dname</strong></th></tr></thead><tbody><tr><td>10</td><td>Computer</td></tr><tr><td>20</td><td>Civil</td></tr><tr><td>40</td><td>Mech</td></tr></tbody></table></div>
+<div class="codewrap"><pre><code>SELECT * FROM Student NATURAL JOIN Dept;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<div class="tablewrap"><table><thead><tr><th><strong>did</strong></th><th><strong>roll</strong></th><th><strong>name</strong></th><th><strong>dname</strong></th></tr></thead><tbody><tr><td>10</td><td>1</td><td>Amit</td><td>Computer</td></tr><tr><td>20</td><td>2</td><td>Neha</td><td>Civil</td></tr></tbody></table></div>
+<p>Common column <em>did</em> is used for matching and is shown once. Karan (did 30) and Mech (did 40) have no match, so they are not in the output. <strong>Caution:</strong> if the tables share other unintended column names, they will also be used for joining.</p>
+<h2 id="6-explain-ddl-dml-dcl-with-example">6) Explain DDL, DML, DCL with example.<a href="#6-explain-ddl-dml-dcl-with-example" class="anchor" aria-label="Permalink for this section"></a></h2>
+<div class="tablewrap"><table><thead><tr><th><strong>Type</strong></th><th><strong>Full form</strong></th><th><strong>Purpose</strong></th><th><strong>Commands</strong></th></tr></thead><tbody><tr><td>DDL</td><td>Data Definition Language</td><td>Defines or changes the structure (schema) of database objects. Auto-commit.</td><td>CREATE, ALTER, DROP, TRUNCATE, RENAME</td></tr><tr><td>DML</td><td>Data Manipulation Language</td><td>Inserts, modifies, deletes and retrieves the data inside tables.</td><td>INSERT, UPDATE, DELETE, SELECT</td></tr><tr><td>DCL</td><td>Data Control Language</td><td>Controls access rights and privileges of users.</td><td>GRANT, REVOKE</td></tr></tbody></table></div>
+<h3 id="ddl-example">DDL example<a href="#ddl-example" class="anchor" aria-label="Permalink for this section"></a></h3>
+<div class="codewrap"><pre><code>CREATE TABLE Student (rollno INT PRIMARY KEY,
+                      name VARCHAR(30), city VARCHAR(20));
+ALTER TABLE Student ADD age INT;
+TRUNCATE TABLE Student;
+DROP TABLE Student;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="dml-example">DML example<a href="#dml-example" class="anchor" aria-label="Permalink for this section"></a></h3>
+<div class="codewrap"><pre><code>INSERT INTO Student VALUES (1, 'Amit', 'Surat', 20);
+UPDATE Student SET city = 'Rajkot' WHERE rollno = 1;
+DELETE FROM Student WHERE rollno = 1;
+SELECT * FROM Student;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="dcl-example">DCL example<a href="#dcl-example" class="anchor" aria-label="Permalink for this section"></a></h3>
+<div class="codewrap"><pre><code>GRANT SELECT, INSERT ON Student TO user1;
+REVOKE INSERT ON Student FROM user1;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<p><em>TCL (Transaction Control Language): COMMIT, ROLLBACK and SAVEPOINT control transactions made</em> <em>by DML statements.</em></p>
+<h2 id="7-write-with-example-various-built-in-string-functions">7) Write with example various built in string functions.<a href="#7-write-with-example-various-built-in-string-functions" class="anchor" aria-label="Permalink for this section"></a></h2>
+<div class="tablewrap"><table><thead><tr><th><strong>Function</strong></th><th><strong>Description</strong></th><th><strong>Example</strong></th><th><strong>Result</strong></th></tr></thead><tbody><tr><td>UPPER(s)</td><td>Converts to uppercase</td><td><code>UPPER('database')</code></td><td><code>DATABASE</code></td></tr><tr><td>LOWER(s)</td><td>Converts to lowercase</td><td><code>LOWER('SQL')</code></td><td><code>sql</code></td></tr><tr><td>INITCAP(s)</td><td>First letter of each word capital</td><td><code>INITCAP('database</code><br><code>system')</code></td><td><code>Database</code><br><code>System</code></td></tr><tr><td>LENGTH(s)</td><td>Number of characters</td><td><code>LENGTH('Oracle')</code></td><td><code>6</code></td></tr><tr><td>SUBSTR(s,m, n)</td><td>n characters from position m</td><td><code>SUBSTR('DATABASE',1,4)</code></td><td><code>DATA</code></td></tr><tr><td>INSTR(s,x)</td><td>Position of x in s</td><td><code>INSTR('DATABASE','B')</code></td><td><code>5</code></td></tr><tr><td>CONCAT(a,b)</td><td>Joins two strings (or a || b)</td><td><code>CONCAT('Data','base')</code></td><td><code>Database</code></td></tr><tr><td>TRIM(s)</td><td>Removes leading and trailing spaces</td><td><code>TRIM(' SQL ')</code></td><td><code>SQL</code></td></tr><tr><td>LTRIM / RTRIM</td><td>Removes left / right characters</td><td><code>LTRIM('xxSQL','x')</code></td><td><code>SQL</code></td></tr><tr><td>REPLACE(s,a ,b)</td><td>Replaces a by b in s</td><td><code>REPLACE('Jack','J','Bl'</code><br><code>)</code></td><td><code>Black</code></td></tr><tr><td>LPAD(s,n,c)</td><td>Pads on left up to length n</td><td><code>LPAD('7',3,'0')</code></td><td><code>007</code></td></tr><tr><td>RPAD(s,n,c)</td><td>Pads on right up to length n</td><td><code>RPAD('SQL',6,'*')</code></td><td><code>SQL***</code></td></tr></tbody></table></div>
+<div class="codewrap"><pre><code>SELECT UPPER(ename), LENGTH(ename) FROM Emp;
+SELECT 'Data' || 'base' FROM DUAL;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h2 id="8-explain-any-two-string-functions-in-sql">8) Explain any two string functions in SQL.<a href="#8-explain-any-two-string-functions-in-sql" class="anchor" aria-label="Permalink for this section"></a></h2>
+<h3 id="1-upper">1. UPPER( )<a href="#1-upper" class="anchor" aria-label="Permalink for this section"></a></h3>
+<p>Converts all characters of a string to uppercase. <strong>Syntax:</strong> <code>UPPER(string)</code></p>
+<div class="codewrap"><pre><code>SELECT UPPER('database management') FROM DUAL;
+-- Result: DATABASE MANAGEMENT
+SELECT UPPER(sname) FROM Supplier;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="2-substr">2. SUBSTR( )<a href="#2-substr" class="anchor" aria-label="Permalink for this section"></a></h3>
+<p>Extracts a part of a string. <strong>Syntax:</strong> <code>SUBSTR(string, start_position, length)</code>. The first position is 1; a negative start counts from the end (Oracle); if length is omitted, the rest of the string is returned.</p>
+<div class="codewrap"><pre><code>SELECT SUBSTR('DATABASE', 1, 4) FROM DUAL;   -- DATA
+SELECT SUBSTR('DATABASE', 5)    FROM DUAL;   -- BASE
+SELECT SUBSTR('DATABASE', -4, 2) FROM DUAL;  -- BA</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h2 id="9-explain-any-two-aggregate-functions-of-sql">9) Explain any two aggregate functions of SQL.<a href="#9-explain-any-two-aggregate-functions-of-sql" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p>Aggregate functions work on a set of rows and return a <strong>single value</strong>. They ignore NULL values (except COUNT(*)) and are often used with GROUP BY. Other aggregate functions: COUNT, MAX, MIN.</p>
+<div class="tablewrap"><table><thead><tr><th><strong>Emp</strong></th><th><strong>ename</strong></th><th><strong>sal</strong></th></tr></thead><tbody><tr><td></td><td>Ravi</td><td>20000</td></tr><tr><td></td><td>Meena</td><td>30000</td></tr><tr><td></td><td>John</td><td>NULL</td></tr></tbody></table></div>
+<h3 id="1-sum">1. SUM( )<a href="#1-sum" class="anchor" aria-label="Permalink for this section"></a></h3>
+<p>Returns the total of the values of a numeric column. <strong>Syntax:</strong> <code>SUM([DISTINCT] column)</code></p>
+<div class="codewrap"><pre><code>SELECT SUM(sal) FROM Emp;   -- 50000 (NULL ignored)</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="2-avg">2. AVG( )<a href="#2-avg" class="anchor" aria-label="Permalink for this section"></a></h3>
+<p>Returns the average of the non-NULL values of a numeric column. <strong>Syntax:</strong> <code>AVG(column)</code></p>
+<div class="codewrap"><pre><code>SELECT AVG(sal) FROM Emp;   -- 25000 (50000 / 2 values)</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<p>With grouping: <code>SELECT deptno, SUM(sal), AVG(sal) FROM Emp GROUP BY</code> <code>deptno;</code></p>
+<h2 id="10-what-is-view-give-the-advantages-of-view">10) What is View? Give the advantages of View.<a href="#10-what-is-view-give-the-advantages-of-view" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p>A <strong>view</strong> is a <strong>virtual table</strong> based on the result of a stored SELECT query. It does not store data itself; it displays data from one or more base tables and is recomputed every time it is used.</p>
+<div class="codewrap"><pre><code>CREATE VIEW emp_dept AS
+SELECT e.ename, e.sal, d.dname
+FROM Emp e JOIN Dept d ON e.deptno = d.deptno
+WHERE e.sal &gt; 3000;
+
+SELECT * FROM emp_dept;
+DROP VIEW emp_dept;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="advantages-of-views">Advantages of views<a href="#advantages-of-views" class="anchor" aria-label="Permalink for this section"></a></h3>
+<ul><li><strong>Security:</strong> hides sensitive columns/rows; users see only permitted data.</li><li><strong>Simplicity:</strong> hides complex joins and queries behind a simple name.</li><li><strong>Logical data independence:</strong> the base table structure can change without changing applications.</li><li><strong>Customised presentation:</strong> different users get different views of the same data.</li><li><strong>Consistency and reuse:</strong> one query definition is reused everywhere; no data duplication, so no extra storage.</li></ul>
+<p><strong>Limitation:</strong> updates through views are restricted for views with joins, GROUP BY, DISTINCT or aggregates.</p>
+<h2 id="11-explain-what-is-null">11) Explain what is NULL?<a href="#11-explain-what-is-null" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p><strong>NULL</strong> is a special marker that represents a value that is <strong>missing, unknown or not applicable</strong>. It is <strong>not</strong> the same as zero or an empty string.</p>
+<ul><li>A column can hold NULL unless it has a NOT NULL or PRIMARY KEY constraint.</li><li>Comparison with NULL using =, &lt;&gt; gives UNKNOWN, so use <code>IS NULL</code> or <code>IS NOT NULL</code>.</li><li>Any arithmetic with NULL gives NULL (e.g., 100 + NULL = NULL).</li><li>Aggregate functions (SUM, AVG, COUNT(column)) ignore NULLs.</li><li>Logic is three-valued: TRUE, FALSE, UNKNOWN. NULL = NULL is UNKNOWN, not TRUE.</li><li>Functions to handle NULL: <code>NVL(x, 0)</code> in Oracle, <code>COALESCE(x, 0)</code>.</li></ul>
+<div class="codewrap"><pre><code>SELECT ename FROM Emp WHERE comm IS NULL;
+SELECT ename, sal + NVL(comm, 0) FROM Emp;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h2 id="12-supplier-s-sname-status-city-parts-p-pname-color-weight-city-sp-s-p-quantity-">12) Supplier (S#, sname, status, city), Parts (P#, pname, color, weight, city), SP (S#, P#, quantity). Write SQL queries.<a href="#12-supplier-s-sname-status-city-parts-p-pname-color-weight-city-sp-s-p-quantity-" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p><em>Oracle allows # in names. If your DBMS does not, rename S# and P# to S_no and P_no.</em></p>
+<h3 id="a-queries">(a) Queries<a href="#a-queries" class="anchor" aria-label="Permalink for this section"></a></h3>
+<h4 id="i-find-name-of-supplier-for-city-delhi">(i) Find name of supplier for city = Delhi.<a href="#i-find-name-of-supplier-for-city-delhi" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT sname FROM Supplier WHERE city = 'Delhi';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="ii-find-suppliers-whose-name-starts-with-ab">(ii) Find suppliers whose name starts with AB.<a href="#ii-find-suppliers-whose-name-starts-with-ab" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT * FROM Supplier WHERE sname LIKE 'AB%';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iii-find-all-suppliers-whose-status-is-10-20-or-30">(iii) Find all suppliers whose status is 10, 20 or 30.<a href="#iii-find-all-suppliers-whose-status-is-10-20-or-30" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT * FROM Supplier WHERE status IN (10, 20, 30);</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iv-find-total-number-of-city-of-all-suppliers">(iv) Find total number of city of all suppliers.<a href="#iv-find-total-number-of-city-of-all-suppliers" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT COUNT(DISTINCT city) FROM Supplier;   -- number of different cities</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="v-find-s-of-supplier-who-supplies-red-part">(v) Find S# of supplier who supplies red part.<a href="#v-find-s-of-supplier-who-supplies-red-part" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT DISTINCT sp.S#
+FROM SP sp JOIN Parts p ON sp.P# = p.P#
+WHERE p.color = 'red';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="vi-count-number-of-supplier-who-supplies-red-part">(vi) Count number of supplier who supplies red part.<a href="#vi-count-number-of-supplier-who-supplies-red-part" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT COUNT(DISTINCT sp.S#)
+FROM SP sp JOIN Parts p ON sp.P# = p.P#
+WHERE p.color = 'red';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="vii-sort-the-supplier-table-by-sname">(vii) Sort the supplier table by sname.<a href="#vii-sort-the-supplier-table-by-sname" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT * FROM Supplier ORDER BY sname;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="b-queries">(b) Queries<a href="#b-queries" class="anchor" aria-label="Permalink for this section"></a></h3>
+<h4 id="i-delete-records-in-supplier-table-whose-status-is-40">(i) Delete records in supplier table whose status is 40.<a href="#i-delete-records-in-supplier-table-whose-status-is-40" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>DELETE FROM Supplier WHERE status = 40;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<p><em>If SP has a foreign key to Supplier, first delete the related SP rows or define ON DELETE CASCADE.</em></p>
+<h4 id="ii-add-one-field-in-supplier-table">(ii) Add one field in supplier table.<a href="#ii-add-one-field-in-supplier-table" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>ALTER TABLE Supplier ADD phone VARCHAR(15);</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iii-explain-commit-command">(iii) Explain commit command.<a href="#iii-explain-commit-command" class="anchor" aria-label="Permalink for this section"></a></h4>
+<p><strong>COMMIT</strong> is a TCL command that ends the current transaction and <strong>permanently saves</strong> all its DML changes (INSERT, UPDATE, DELETE) to the database, makes them visible to other users, and releases the locks. After COMMIT, the changes cannot be rolled back. DDL statements commit automatically.</p>
+<div class="codewrap"><pre><code>DELETE FROM Supplier WHERE status = 40;
+COMMIT;   -- change is now permanent</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iv-explain-cursor-in-plsql">(iv) Explain Cursor in PL/SQL.<a href="#iv-explain-cursor-in-plsql" class="anchor" aria-label="Permalink for this section"></a></h4>
+<p>A <strong>cursor</strong> is a pointer to a private memory area (context area) created by Oracle to hold the rows returned by a SQL statement, which lets PL/SQL process a multi-row result <strong>one row at a time</strong>. <strong>Implicit cursors</strong> are created automatically for INSERT, UPDATE, DELETE and single-row SELECT. <strong>Explicit cursors</strong> are defined by the programmer and handled in four steps: DECLARE, OPEN, FETCH, CLOSE. (Detailed answer in PL/SQL Q3.)</p>
+<div class="codewrap"><pre><code>DECLARE
+  CURSOR c1 IS SELECT sname FROM Supplier;
+  v_name Supplier.sname%TYPE;
+BEGIN
+  OPEN c1;
+  LOOP
+    FETCH c1 INTO v_name;
+    EXIT WHEN c1%NOTFOUND;
+    DBMS_OUTPUT.PUT_LINE(v_name);
+  END LOOP;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<div class="codewrap"><pre><code>  CLOSE c1;
+END;
+/</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="c-queries">(c) Queries<a href="#c-queries" class="anchor" aria-label="Permalink for this section"></a></h3>
+<h4 id="i-find-name-of-parts-whose-color-is-red">(i) Find name of parts whose color is red.<a href="#i-find-name-of-parts-whose-color-is-red" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT pname FROM Parts WHERE color = 'red';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="ii-find-parts-name-whose-weight-less-than-10-kg">(ii) Find parts name whose weight less than 10 kg.<a href="#ii-find-parts-name-whose-weight-less-than-10-kg" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT pname FROM Parts WHERE weight &lt; 10;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iii-find-all-parts-whose-weight-from-10-to-20-kg">(iii) Find all parts whose weight from 10 to 20 kg.<a href="#iii-find-all-parts-whose-weight-from-10-to-20-kg" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT * FROM Parts WHERE weight BETWEEN 10 AND 20;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iv-find-average-weight-of-all-parts">(iv) Find average weight of all parts.<a href="#iv-find-average-weight-of-all-parts" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT AVG(weight) FROM Parts;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="v-find-s-of-supplier-who-supply-part-p2">(v) Find S# of supplier who supply part 'p2'.<a href="#v-find-s-of-supplier-who-supply-part-p2" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT DISTINCT S# FROM SP WHERE P# = 'p2';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="vi-find-name-of-supplier-who-supply-maximum-parts">(vi) Find name of supplier who supply maximum parts.<a href="#vi-find-name-of-supplier-who-supply-maximum-parts" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT s.sname
+FROM Supplier s JOIN SP sp ON s.S# = sp.S#
+GROUP BY s.S#, s.sname
+HAVING COUNT(sp.P#) &gt;= ALL (SELECT COUNT(P#) FROM SP GROUP BY S#);</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="vii-sort-the-parts-table-by-pname">(vii) Sort the parts table by pname.<a href="#vii-sort-the-parts-table-by-pname" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT * FROM Parts ORDER BY pname;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="d-queries">(d) Queries<a href="#d-queries" class="anchor" aria-label="Permalink for this section"></a></h3>
+<h4 id="i-delete-records-in-parts-table-whose-color-is-blue">(i) Delete records in parts table whose color is 'blue'.<a href="#i-delete-records-in-parts-table-whose-color-is-blue" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>DELETE FROM Parts WHERE color = 'blue';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="ii-drop-one-field-in-parts-table">(ii) Drop one field in parts table.<a href="#ii-drop-one-field-in-parts-table" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>ALTER TABLE Parts DROP COLUMN city;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h2 id="13-student-rollno-name-branch-exam-rollno-subjectcode-obtainedmarks-papercode-pa">13) Student (rollno, name, branch), Exam (rollno, subject_code, obtained_marks, paper_code), Papers (paper_code, paper_setter_name, university). Write SQL.<a href="#13-student-rollno-name-branch-exam-rollno-subjectcode-obtainedmarks-papercode-pa" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p><em>Assumption: first class means obtained marks of 60 or more (out of 100).</em></p>
+<h4 id="i-display-name-of-student-who-got-first-class-in-subject-130703">(i) Display name of student who got first class in subject '130703'.<a href="#i-display-name-of-student-who-got-first-class-in-subject-130703" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT DISTINCT s.name
+FROM Student s JOIN Exam e ON s.rollno = e.rollno
+WHERE e.subject_code = '130703' AND e.obtained_marks &gt;= 60;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="ii-display-name-of-all-student-with-their-total-mark">(ii) Display name of all student with their total mark.<a href="#ii-display-name-of-all-student-with-their-total-mark" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT s.name, SUM(e.obtained_marks) AS total_marks
+FROM Student s JOIN Exam e ON s.rollno = e.rollno
+GROUP BY s.rollno, s.name;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iii-display-list-number-of-student-in-each-university">(iii) Display list number of student in each university.<a href="#iii-display-list-number-of-student-in-each-university" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT p.university, COUNT(DISTINCT e.rollno) AS no_of_students
+FROM Exam e JOIN Papers p ON e.paper_code = p.paper_code
+GROUP BY p.university;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iv-display-list-of-student-who-has-not-given-any-exam">(iv) Display list of student who has not given any exam.<a href="#iv-display-list-of-student-who-has-not-given-any-exam" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT s.name FROM Student s
+WHERE NOT EXISTS (SELECT 1 FROM Exam e WHERE e.rollno = s.rollno);</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h2 id="14-person-ss-name-address-car-license-year-model-accident-date-driver-damage-amo">14) Person (ss#, name, address), Car (license, year, model), Accident (date, driver, damage-amount), Owns (ss#, license), Log (license, date, driver). Write queries.<a href="#14-person-ss-name-address-car-license-year-model-accident-date-driver-damage-amo" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p><em>Assumptions: Accident.driver and Log.driver hold the ss# of the driver; each Log row records one car</em> <em>involved in the accident on that date. If DATE is reserved in your DBMS, write it as "date" or rename it</em> <em>accident_date. Hyphens are written as underscores.</em></p>
+<h4 id="i-find-the-total-number-of-people-whose-cars-were-involved-in-accidents-in-2009">(i) Find the total number of people whose cars were involved in accidents in 2009.<a href="#i-find-the-total-number-of-people-whose-cars-were-involved-in-accidents-in-2009" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT COUNT(DISTINCT o.ss#)
+FROM Owns o JOIN Log l ON o.license = l.license
+WHERE EXTRACT(YEAR FROM l.date) = 2009;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="ii-find-the-number-of-accidents-in-which-the-cars-belonging-to-ssudarshan">(ii) Find the number of accidents in which the cars belonging to "S.Sudarshan".<a href="#ii-find-the-number-of-accidents-in-which-the-cars-belonging-to-ssudarshan" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT COUNT(*)
+FROM Person p JOIN Owns o ON p.ss# = o.ss#
+              JOIN Log l  ON o.license = l.license
+WHERE p.name = 'S.Sudarshan';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iii-add-a-new-customer-to-the-database">(iii) Add a new customer to the database.<a href="#iii-add-a-new-customer-to-the-database" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>INSERT INTO Person (ss#, name, address)
+VALUES (1005, 'Rahul Shah', 'Ahmedabad');</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iv-add-a-new-accident-recorded-for-the-santro-belonging-to-korth">(iv) Add a new accident recorded for the Santro belonging to "KORTH".<a href="#iv-add-a-new-accident-recorded-for-the-santro-belonging-to-korth" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>INSERT INTO Accident (date, driver, damage_amount)
+SELECT DATE '2026-11-20', p.ss#, 15000
+FROM Person p WHERE p.name = 'KORTH';
+
+INSERT INTO Log (license, date, driver)
+SELECT c.license, DATE '2026-11-20', p.ss#
+FROM Person p JOIN Owns o ON p.ss# = o.ss#
+              JOIN Car c  ON o.license = c.license
+WHERE p.name = 'KORTH' AND c.model = 'Santro';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h2 id="15-employee-employee-name-street-city-works-employee-name-company-name-salary-co">15) Employee (employee-name, street, city), Works (employee-name, company-name, salary), Company (company-name, city), Manages (employee-name, manager-name). Write SQL.<a href="#15-employee-employee-name-street-city-works-employee-name-company-name-salary-co" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p><em>Hyphens in column names are written as underscores.</em></p>
+<h4 id="i-find-the-name-of-all-employees-who-work-for-state-bank">(i) Find the name of all employees who work for State Bank.<a href="#i-find-the-name-of-all-employees-who-work-for-state-bank" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT employee_name FROM Works WHERE company_name = 'State Bank';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="ii-find-the-names-and-cities-of-residence-of-all-employees-who-work-for-state-ba">(ii) Find the names and cities of residence of all employees who work for State Bank.<a href="#ii-find-the-names-and-cities-of-residence-of-all-employees-who-work-for-state-ba" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT e.employee_name, e.city
+FROM Employee e JOIN Works w ON e.employee_name = w.employee_name
+WHERE w.company_name = 'State Bank';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iii-find-all-employees-in-the-database-who-do-not-work-for-state-bank">(iii) Find all employees in the database who do not work for State Bank.<a href="#iii-find-all-employees-in-the-database-who-do-not-work-for-state-bank" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT employee_name FROM Employee
+WHERE employee_name NOT IN
+      (SELECT employee_name FROM Works
+       WHERE company_name = 'State Bank');</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iv-find-all-employees-in-the-database-who-earn-more-than-every-employee-of-uco-b">(iv) Find all employees in the database who earn more than every employee of UCO Bank.<a href="#iv-find-all-employees-in-the-database-who-earn-more-than-every-employee-of-uco-b" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT employee_name FROM Works
+WHERE salary &gt; ALL (SELECT salary FROM Works
+                    WHERE company_name = 'UCO Bank');</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h2 id="16-student-rollno-name-age-sex-city-studentmarks-rollno-sub1-sub2-sub3-total-ave">16) Student (Rollno, Name, Age, Sex, City), Student_marks (Rollno, Sub1, Sub2, Sub3, Total, Average). Write queries.<a href="#16-student-rollno-name-age-sex-city-studentmarks-rollno-sub1-sub2-sub3-total-ave" class="anchor" aria-label="Permalink for this section"></a></h2>
+<h4 id="i-calculate-and-store-total-and-average-marks-from-sub1-sub2-and-sub3">(i) Calculate and store total and average marks from Sub1, Sub2 and Sub3.<a href="#i-calculate-and-store-total-and-average-marks-from-sub1-sub2-and-sub3" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>UPDATE Student_marks
+SET Total   = Sub1 + Sub2 + Sub3,
+    Average = (Sub1 + Sub2 + Sub3) / 3;
+COMMIT;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="ii-display-name-of-students-who-got-more-than-60-marks-in-subject-sub1">(ii) Display name of students who got more than 60 marks in subject Sub1.<a href="#ii-display-name-of-students-who-got-more-than-60-marks-in-subject-sub1" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT s.Name FROM Student s JOIN Student_marks m
+ON s.Rollno = m.Rollno WHERE m.Sub1 &gt; 60;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iii-display-name-of-students-with-their-total-and-average-marks">(iii) Display name of students with their total and average marks.<a href="#iii-display-name-of-students-with-their-total-and-average-marks" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT s.Name, m.Total, m.Average
+FROM Student s JOIN Student_marks m ON s.Rollno = m.Rollno;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iv-display-name-of-students-who-got-equal-marks-in-subject-sub2">(iv) Display name of students who got equal marks in subject Sub2.<a href="#iv-display-name-of-students-who-got-equal-marks-in-subject-sub2" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT s.Name, m.Sub2
+FROM Student s JOIN Student_marks m ON s.Rollno = m.Rollno
+WHERE m.Sub2 IN (SELECT Sub2 FROM Student_marks
+                 GROUP BY Sub2 HAVING COUNT(*) &gt; 1)
+ORDER BY m.Sub2;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h2 id="17-student-studno-studname-sub1-sub2-totalmark-percentage-implement-using-sql">17) Student (stud_no, stud_name, sub1, sub2, totalmark, percentage). Implement using SQL.<a href="#17-student-studno-studname-sub1-sub2-totalmark-percentage-implement-using-sql" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p><em>Assumption: two subjects, each out of 100, so percentage = total / 2.</em></p>
+<h3 id="i-create-table-add-5-records-and-display-data">(i) Create table, add 5 records and display data<a href="#i-create-table-add-5-records-and-display-data" class="anchor" aria-label="Permalink for this section"></a></h3>
+<div class="codewrap"><pre><code>CREATE TABLE Student (
+  stud_no    NUMBER(5) PRIMARY KEY,
+  stud_name  VARCHAR2(30) NOT NULL,
+  sub1       NUMBER(3),
+  sub2       NUMBER(3),
+  totalmark  NUMBER(4),
+  percentage NUMBER(5,2)
+);
+INSERT INTO Student (stud_no, stud_name, sub1, sub2)
+  VALUES (101, 'Amit', 70, 65);
+INSERT INTO Student (stud_no, stud_name, sub1, sub2)
+  VALUES (102, 'Neha', 82, 90);
+INSERT INTO Student (stud_no, stud_name, sub1, sub2)
+  VALUES (103, 'Rohan', 55, 48);
+INSERT INTO Student (stud_no, stud_name, sub1, sub2)
+  VALUES (104, 'Priya', 91, 88);
+INSERT INTO Student (stud_no, stud_name, sub1, sub2)
+  VALUES (111, 'Karan', 40, 60);
+SELECT * FROM Student;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="ii-calculate-total-and-percentage-arrange-in-ascending-order-of-total-create-a-v">(ii) Calculate total and percentage, arrange in ascending order of total, create a view<a href="#ii-calculate-total-and-percentage-arrange-in-ascending-order-of-total-create-a-v" class="anchor" aria-label="Permalink for this section"></a></h3>
+<div class="codewrap"><pre><code>UPDATE Student
+SET totalmark = sub1 + sub2, percentage = (sub1 + sub2) / 2;
+
+SELECT * FROM Student ORDER BY totalmark ASC;
+
+CREATE VIEW student_rank AS
+SELECT stud_no, stud_name, sub1, sub2, totalmark, percentage
+FROM Student ORDER BY totalmark ASC;
+
+SELECT * FROM student_rank;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<div class="tablewrap"><table><thead><tr><th><strong>stud_no</strong></th><th><strong>stud_name</strong></th><th><strong>sub1</strong></th><th><strong>sub2</strong></th><th><strong>totalmark</strong></th><th><strong>percentage</strong></th></tr></thead><tbody><tr><td><code>111</code></td><td><code>Karan</code></td><td><code>40</code></td><td><code>60</code></td><td><code>100</code></td><td><code>50</code></td></tr><tr><td><code>103</code></td><td><code>Rohan</code></td><td><code>55</code></td><td><code>48</code></td><td><code>103</code></td><td><code>51.5</code></td></tr><tr><td><code>101</code></td><td><code>Amit</code></td><td><code>70</code></td><td><code>65</code></td><td><code>135</code></td><td><code>67.5</code></td></tr><tr><td><code>102</code></td><td><code>Neha</code></td><td><code>82</code></td><td><code>90</code></td><td><code>172</code></td><td><code>86</code></td></tr><tr><td><code>104</code></td><td><code>Priya</code></td><td><code>91</code></td><td><code>88</code></td><td><code>179</code></td><td><code>89.5</code></td></tr></tbody></table></div>
+<h3 id="iii-update-sub1-of-studentno-111-to-50-and-recalculate">(iii) Update sub1 of student_no = 111 to 50 and recalculate<a href="#iii-update-sub1-of-studentno-111-to-50-and-recalculate" class="anchor" aria-label="Permalink for this section"></a></h3>
+<div class="codewrap"><pre><code>UPDATE Student
+SET sub1 = 50,
+    totalmark  = 50 + sub2,
+    percentage = (50 + sub2) / 2
+WHERE stud_no = 111;
+COMMIT;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<p>Result for student 111: sub1 = 50, sub2 = 60, totalmark = 110, percentage = 55. (In an UPDATE, the right side uses old column values, so the new value 50 is used directly.) The view shows the new data automatically.</p>
+<h2 id="18-employee-empno-empname-department-city-salary-implement-using-sql">18) Employee (emp_no, emp_name, department, city, salary). Implement using SQL.<a href="#18-employee-empno-empname-department-city-salary-implement-using-sql" class="anchor" aria-label="Permalink for this section"></a></h2>
+<h4 id="i-find-all-the-employees-whose-empno-is-less-than-100-and-salary-more-than-25000">(i) Find all the employees whose emp_no is less than 100 and salary more than 25000 and department is "Account".<a href="#i-find-all-the-employees-whose-empno-is-less-than-100-and-salary-more-than-25000" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT * FROM Employee
+WHERE emp_no &lt; 100 AND salary &gt; 25000 AND department = 'Account';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="ii-count-the-number-of-employees-and-sum-the-salary-of-all-employees">(ii) Count the number of employees and sum the salary of all employees.<a href="#ii-count-the-number-of-employees-and-sum-the-salary-of-all-employees" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT COUNT(*) AS total_employees, SUM(salary) AS total_salary
+FROM Employee;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iii-delete-the-employee-having-minimum-salary">(iii) Delete the employee having minimum salary.<a href="#iii-delete-the-employee-having-minimum-salary" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>DELETE FROM Employee
+WHERE salary = (SELECT MIN(salary) FROM Employee);</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h2 id="19-emp-empno-ename-jobtitle-managerno-hiredate-sal-comm-deptno-dept-deptno-dname">19) EMP (empno, ename, jobtitle, managerno, hiredate, sal, comm, deptno), DEPT (deptno, dname, loc). Answer in SQL.<a href="#19-emp-empno-ename-jobtitle-managerno-hiredate-sal-comm-deptno-dept-deptno-dname" class="anchor" aria-label="Permalink for this section"></a></h2>
+<h4 id="i-employees-getting-salary-greater-than-3000-and-belonging-to-department-20">(i) Employees getting salary greater than 3000 and belonging to department 20.<a href="#i-employees-getting-salary-greater-than-3000-and-belonging-to-department-20" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT * FROM EMP WHERE sal &gt; 3000 AND deptno = 20;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="ii-employees-who-are-not-getting-any-commission">(ii) Employees who are not getting any commission.<a href="#ii-employees-who-are-not-getting-any-commission" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT * FROM EMP WHERE comm IS NULL;   -- or: comm IS NULL OR comm = 0</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iii-find-how-many-job-titles-are-available-in-employee-table">(iii) Find how many job titles are available in employee table.<a href="#iii-find-how-many-job-titles-are-available-in-employee-table" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT COUNT(DISTINCT jobtitle) FROM EMP;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iv-display-total-salary-spent-for-each-job-category">(iv) Display total salary spent for each job category.<a href="#iv-display-total-salary-spent-for-each-job-category" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT jobtitle, SUM(sal) AS total_salary
+FROM EMP GROUP BY jobtitle;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="v-display-number-of-employees-working-in-each-department-and-their-department-na">(v) Display number of employees working in each department and their department name.<a href="#v-display-number-of-employees-working-in-each-department-and-their-department-na" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT d.dname, COUNT(e.empno) AS no_of_employees
+FROM DEPT d LEFT JOIN EMP e ON d.deptno = e.deptno
+GROUP BY d.deptno, d.dname;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="vi-list-ename-whose-manager-is-null">(vi) List ename whose manager is NULL.<a href="#vi-list-ename-whose-manager-is-null" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT ename FROM EMP WHERE managerno IS NULL;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="vii-list-employee-names-and-salaries-whose-salary-lies-between-1500-and-3500-bot">(vii) List employee names and salaries whose salary lies between 1500 and 3500, both inclusive.<a href="#vii-list-employee-names-and-salaries-whose-salary-lies-between-1500-and-3500-bot" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT ename, sal FROM EMP WHERE sal BETWEEN 1500 AND 3500;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h2 id="20-using-emp-and-dept-tables-of-q19-answer-the-following-in-sql">20) Using EMP and DEPT tables of Q19, answer the following in SQL.<a href="#20-using-emp-and-dept-tables-of-q19-answer-the-following-in-sql" class="anchor" aria-label="Permalink for this section"></a></h2>
+<h4 id="i-find-the-employees-working-in-the-department-10-20-30-only">(i) Find the employees working in the department 10, 20, 30 only.<a href="#i-find-the-employees-working-in-the-department-10-20-30-only" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT * FROM EMP WHERE deptno IN (10, 20, 30);</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="ii-find-employees-whose-names-start-with-letter-a-or-letter-a">(ii) Find employees whose names start with letter A or letter a.<a href="#ii-find-employees-whose-names-start-with-letter-a-or-letter-a" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT * FROM EMP WHERE ename LIKE 'A%' OR ename LIKE 'a%';
+-- or: WHERE UPPER(ename) LIKE 'A%'</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iii-find-employees-along-with-their-department-name">(iii) Find employees along with their department name.<a href="#iii-find-employees-along-with-their-department-name" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT e.ename, d.dname
+FROM EMP e JOIN DEPT d ON e.deptno = d.deptno;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iv-find-employees-whose-manager-is-king">(iv) Find employees whose manager is KING.<a href="#iv-find-employees-whose-manager-is-king" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT ename FROM EMP
+WHERE managerno = (SELECT empno FROM EMP WHERE ename = 'KING');</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="v-find-the-employees-who-are-working-in-smiths-department">(v) Find the employees who are working in Smith's department.<a href="#v-find-the-employees-who-are-working-in-smiths-department" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT ename FROM EMP
+WHERE deptno = (SELECT deptno FROM EMP WHERE ename = 'SMITH');</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="vi-find-the-employees-who-get-salary-more-than-allens-salary">(vi) Find the employees who get salary more than Allen's salary.<a href="#vi-find-the-employees-who-get-salary-more-than-allens-salary" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT ename, sal FROM EMP
+WHERE sal &gt; (SELECT sal FROM EMP WHERE ename = 'ALLEN');</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="vii-display-employees-who-are-getting-maximum-salary-in-each-department">(vii) Display employees who are getting maximum salary in each department.<a href="#vii-display-employees-who-are-getting-maximum-salary-in-each-department" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT ename, deptno, sal FROM EMP e
+WHERE sal = (SELECT MAX(sal) FROM EMP WHERE deptno = e.deptno);</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h2 id="21-t1-empno-ename-salary-designation-t2-empno-deptno-write-queries">21) T1 (Empno, Ename, Salary, Designation), T2 (Empno, Deptno). Write queries.<a href="#21-t1-empno-ename-salary-designation-t2-empno-deptno-write-queries" class="anchor" aria-label="Permalink for this section"></a></h2>
+<h4 id="i-display-all-rows-for-salary-greater-than-5000">(i) Display all rows for salary greater than 5000.<a href="#i-display-all-rows-for-salary-greater-than-5000" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT * FROM T1 WHERE Salary &gt; 5000;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="ii-display-the-deptno-for-the-ename-syham">(ii) Display the deptno for the ename = 'syham'.<a href="#ii-display-the-deptno-for-the-ename-syham" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT t2.Deptno
+FROM T1 t1 JOIN T2 t2 ON t1.Empno = t2.Empno
+WHERE t1.Ename = 'syham';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iii-add-a-new-column-deptno-in-table-t2">(iii) Add a new column deptno in table T2.<a href="#iii-add-a-new-column-deptno-in-table-t2" class="anchor" aria-label="Permalink for this section"></a></h4>
+<p>T2 already has Deptno, so the new column needed for part (vi) is the department name. Adding it:</p>
+<div class="codewrap"><pre><code>ALTER TABLE T2 ADD Deptname VARCHAR(20);
+UPDATE T2 SET Deptname = 'Sales' WHERE Deptno = 10;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<p><em>If T2 really lacked Deptno, the statement would be ALTER TABLE T2 ADD Deptno NUMBER(3);</em></p>
+<h4 id="iv-change-the-designation-of-ename-ram-from-clerk-to-senior-clerk">(iv) Change the designation of ename = 'ram' from 'clerk' to 'senior clerk'.<a href="#iv-change-the-designation-of-ename-ram-from-clerk-to-senior-clerk" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>UPDATE T1 SET Designation = 'senior clerk'
+WHERE Ename = 'ram' AND Designation = 'clerk';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="v-find-the-total-salary-of-all-the-rows">(v) Find the total salary of all the rows.<a href="#v-find-the-total-salary-of-all-the-rows" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT SUM(Salary) FROM T1;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="vi-display-empno-ename-deptno-and-deptname">(vi) Display Empno, Ename, Deptno and Deptname.<a href="#vi-display-empno-ename-deptno-and-deptname" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT t1.Empno, t1.Ename, t2.Deptno, t2.Deptname
+FROM T1 t1 JOIN T2 t2 ON t1.Empno = t2.Empno;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="vii-drop-the-table-t1">(vii) Drop the table T1.<a href="#vii-drop-the-table-t1" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>DROP TABLE T1;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h2 id="22-student-rollno-name-age-sex-city-studentmarks-rollno-sub1-sub2-sub3-total-ave">22) Student (RollNo, Name, Age, Sex, City), Student_marks (RollNo, Sub1, Sub2, Sub3, Total, Average). Write SQL.<a href="#22-student-rollno-name-age-sex-city-studentmarks-rollno-sub1-sub2-sub3-total-ave" class="anchor" aria-label="Permalink for this section"></a></h2>
+<h4 id="i-display-name-and-city-of-students-whose-total-marks-are-greater-than-225">(i) Display name and city of students whose total marks are greater than 225.<a href="#i-display-name-and-city-of-students-whose-total-marks-are-greater-than-225" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT s.Name, s.City
+FROM Student s JOIN Student_marks m ON s.RollNo = m.RollNo
+WHERE m.Total &gt; 225;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="ii-display-name-of-students-who-got-more-than-60-marks-in-each-subject">(ii) Display name of students who got more than 60 marks in each subject.<a href="#ii-display-name-of-students-who-got-more-than-60-marks-in-each-subject" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT s.Name
+FROM Student s JOIN Student_marks m ON s.RollNo = m.RollNo
+WHERE m.Sub1 &gt; 60 AND m.Sub2 &gt; 60 AND m.Sub3 &gt; 60;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iii-display-name-of-city-from-where-more-than-10-students-come-from">(iii) Display name of city from where more than 10 students come from.<a href="#iii-display-name-of-city-from-where-more-than-10-students-come-from" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT City FROM Student
+GROUP BY City HAVING COUNT(*) &gt; 10;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h4 id="iv-display-a-unique-pair-of-male-and-female-students">(iv) Display a unique pair of male and female students.<a href="#iv-display-a-unique-pair-of-male-and-female-students" class="anchor" aria-label="Permalink for this section"></a></h4>
+<div class="codewrap"><pre><code>SELECT m.Name AS male_student, f.Name AS female_student
+FROM Student m, Student f
+WHERE m.Sex = 'M' AND f.Sex = 'F';</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<p><em>A self join pairs each male student with each female student exactly once. Add AND m.City = f.City to pair</em> <em>students of the same city.</em></p>
+<h2 id="part-b-plsql-concepts" class="part">Part B: PL/SQL Concepts<a href="#part-b-plsql-concepts" class="anchor" aria-label="Permalink for this section"></a></h2>
+<h2 id="1-explain-the-advantages-of-plsql">1) Explain the advantages of PL/SQL.<a href="#1-explain-the-advantages-of-plsql" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p><strong>PL/SQL</strong> (Procedural Language extension to SQL) is Oracle's block-structured language that combines SQL with procedural features such as variables, conditions, loops and exception handling. Its main advantages are:</p>
+<ul><li><strong>Tight integration with SQL:</strong> SQL statements and data types can be used directly inside the program.</li><li><strong>Procedural constructs:</strong> IF-ELSE, CASE, LOOP, WHILE and FOR give full programming control, which SQL alone lacks.</li><li><strong>Better performance:</strong> a whole block is sent to the server in one call, which reduces network traffic and execution time.</li><li><strong>Modularity and reusability:</strong> programs are divided into blocks, procedures, functions and packages that are stored and reused.</li><li><strong>Exception handling:</strong> run-time errors are trapped and handled cleanly in the EXCEPTION section.</li><li><strong>Portability:</strong> PL/SQL code runs on any platform where Oracle runs.</li><li><strong>Security:</strong> access is given to stored procedures without exposing the underlying tables.</li><li><strong>Supports triggers, cursors and OOP features</strong> such as objects and collections.</li></ul>
+<h3 id="structure-of-a-plsql-block">Structure of a PL/SQL block<a href="#structure-of-a-plsql-block" class="anchor" aria-label="Permalink for this section"></a></h3>
+<div class="codewrap"><pre><code>DECLARE      -- optional: variables, cursors
+  v_name emp.ename%TYPE;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<div class="codewrap"><pre><code>BEGIN        -- mandatory: executable statements
+  SELECT ename INTO v_name FROM emp WHERE empno = 7839;
+  DBMS_OUTPUT.PUT_LINE('Name: ' || v_name);
+EXCEPTION    -- optional: error handling
+  WHEN NO_DATA_FOUND THEN
+    DBMS_OUTPUT.PUT_LINE('No such employee');
+END;
+/</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h2 id="2-explain-commit-and-rollback-command">2) Explain commit and rollback command.<a href="#2-explain-commit-and-rollback-command" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p>Both are TCL (Transaction Control Language) commands that manage the changes made by DML statements.</p>
+<div class="tablewrap"><table><thead><tr><th></th><th><strong>COMMIT</strong></th><th><strong>ROLLBACK</strong></th></tr></thead><tbody><tr><td>Purpose</td><td>Permanently saves all changes of the current transaction</td><td>Undoes all changes since last COMMIT (or SAVEPOINT)</td></tr><tr><td>Effect</td><td>Changes become visible to others; locks released</td><td>Database returns to the previous consistent state</td></tr><tr><td>Syntax</td><td>COMMIT;</td><td>ROLLBACK; or ROLLBACK TO savepoint_name;</td></tr><tr><td>After use</td><td>Cannot be undone</td><td>Changes are lost</td></tr></tbody></table></div>
+<div class="codewrap"><pre><code>INSERT INTO Dept VALUES (50, 'Audit', 'Pune');
+SAVEPOINT sp1;
+UPDATE Emp SET sal = sal + 1000 WHERE deptno = 10;
+ROLLBACK TO sp1;     -- undoes only the UPDATE
+COMMIT;              -- saves the INSERT permanently</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<ul><li><strong>SAVEPOINT</strong> marks a point within a transaction to which a partial rollback can be done.</li><li>DDL commands (CREATE, ALTER, DROP) and normal exit from SQL*Plus cause an <strong>implicit commit</strong>.</li><li>On a system failure or abnormal termination, uncommitted work is <strong>automatically rolled back</strong>.</li><li>Together they ensure the Atomicity and Durability of transactions.</li></ul>
+<h2 id="3-write-note-on-cursor-and-its-types">3) Write note on Cursor and its types.<a href="#3-write-note-on-cursor-and-its-types" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p>A <strong>cursor</strong> is a pointer to a private SQL work area (context area) in memory where Oracle stores the result of a SQL statement. It allows PL/SQL to process the rows of a query result <strong>one by one</strong>. There are two types:</p>
+<h3 id="1-implicit-cursor">1. Implicit cursor<a href="#1-implicit-cursor" class="anchor" aria-label="Permalink for this section"></a></h3>
+<p>Created automatically by Oracle for every INSERT, UPDATE, DELETE and SELECT ... INTO statement. The programmer cannot control it, but its status is available through the cursor named <strong>SQL</strong>.</p>
+<div class="codewrap"><pre><code>BEGIN
+  UPDATE emp SET sal = sal + 500 WHERE deptno = 10;
+  IF SQL%FOUND THEN
+    DBMS_OUTPUT.PUT_LINE(SQL%ROWCOUNT || ' rows updated');
+  END IF;
+END;
+/</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="2-explicit-cursor">2. Explicit cursor<a href="#2-explicit-cursor" class="anchor" aria-label="Permalink for this section"></a></h3>
+<p>Declared and controlled by the programmer for queries that return <strong>more than one row</strong>. Four steps: <strong>DECLARE</strong> (define the cursor with its query), <strong>OPEN</strong> (execute query), <strong>FETCH</strong> (read one row into variables) and <strong>CLOSE</strong> (release memory).</p>
+<div class="codewrap"><pre><code>DECLARE
+  CURSOR c_emp IS SELECT ename, sal FROM emp WHERE deptno = 10;
+  v_name emp.ename%TYPE;
+  v_sal  emp.sal%TYPE;
+BEGIN
+  OPEN c_emp;
+  LOOP
+    FETCH c_emp INTO v_name, v_sal;
+    EXIT WHEN c_emp%NOTFOUND;
+    DBMS_OUTPUT.PUT_LINE(v_name || ' ' || v_sal);
+  END LOOP;
+  CLOSE c_emp;
+END;
+/</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="cursor-attributes">Cursor attributes<a href="#cursor-attributes" class="anchor" aria-label="Permalink for this section"></a></h3>
+<div class="tablewrap"><table><thead><tr><th><strong>Attribute</strong></th><th><strong>Meaning</strong></th></tr></thead><tbody><tr><td><code>%FOUND</code></td><td>TRUE if the last fetch/DML affected at least one row</td></tr><tr><td><code>%NOTFOUND</code></td><td>TRUE if the last fetch returned no row</td></tr><tr><td><code>%ISOPEN</code></td><td>TRUE if the cursor is open (always FALSE for implicit)</td></tr><tr><td><code>%ROWCOUNT</code></td><td>Number of rows fetched or affected so far</td></tr></tbody></table></div>
+<p><strong>Other forms:</strong> cursor FOR loop (opens, fetches and closes automatically), parameterised cursor, and REF cursor (dynamic cursor).</p>
+<div class="codewrap"><pre><code>FOR rec IN c_emp LOOP
+  DBMS_OUTPUT.PUT_LINE(rec.ename);
+END LOOP;</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h2 id="4-write-short-note-on-database-triggers-in-plsql">4) Write short note on database triggers in PL/SQL.<a href="#4-write-short-note-on-database-triggers-in-plsql" class="anchor" aria-label="Permalink for this section"></a></h2>
+<p>A <strong>database trigger</strong> is a stored PL/SQL block that is <strong>executed automatically (fired)</strong> by the database when a specified event occurs on a table or view: INSERT, UPDATE or DELETE. It is used to enforce complex business rules, maintain audit trails and keep data consistent.</p>
+<h3 id="syntax">Syntax<a href="#syntax" class="anchor" aria-label="Permalink for this section"></a></h3>
+<div class="codewrap"><pre><code>CREATE [OR REPLACE] TRIGGER trigger_name
+{BEFORE | AFTER | INSTEAD OF}
+{INSERT | UPDATE [OF column] | DELETE} ON table_name
+[FOR EACH ROW] [WHEN (condition)]
+BEGIN
+  -- trigger body
+END;
+/</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="types-of-triggers">Types of triggers<a href="#types-of-triggers" class="anchor" aria-label="Permalink for this section"></a></h3>
+<ul><li><strong>Timing:</strong> BEFORE (fires before the event) and AFTER (fires after the event).</li><li><strong>Level:</strong> <em>Row-level</em> (FOR EACH ROW, fires once per affected row, can use :OLD and :NEW) and <em>statement-level</em> (fires once per statement).</li><li><strong>Event:</strong> INSERT, UPDATE, DELETE triggers.</li><li><strong>INSTEAD OF</strong> triggers on views; also system and DDL triggers (LOGON, CREATE).</li></ul>
+<p>:OLD holds the old row values (UPDATE/DELETE) and :NEW holds the new row values (INSERT/UPDATE).</p>
+<h3 id="example-1-validation-before-trigger">Example 1: validation (BEFORE trigger)<a href="#example-1-validation-before-trigger" class="anchor" aria-label="Permalink for this section"></a></h3>
+<div class="codewrap"><pre><code>CREATE OR REPLACE TRIGGER trg_check_sal
+BEFORE INSERT OR UPDATE OF sal ON emp
+FOR EACH ROW
+BEGIN
+  IF :NEW.sal &lt; 0 THEN
+    RAISE_APPLICATION_ERROR(-20001, 'Salary cannot be negative');
+  END IF;
+END;
+/</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<h3 id="example-2-audit-after-trigger">Example 2: audit (AFTER trigger)<a href="#example-2-audit-after-trigger" class="anchor" aria-label="Permalink for this section"></a></h3>
+<div class="codewrap"><pre><code>CREATE OR REPLACE TRIGGER trg_emp_audit
+AFTER DELETE ON emp
+FOR EACH ROW
+BEGIN
+  INSERT INTO emp_audit VALUES (:OLD.empno, :OLD.ename, SYSDATE);
+END;
+/</code></pre><button class="copy" type="button" aria-label="Copy code">Copy</button></div>
+<p><strong>Advantages:</strong> automatic enforcement of rules, auditing, data integrity, less application code. <strong>Disadvantages:</strong> hidden logic, harder debugging, can slow down DML. Triggers are removed with <code>DROP TRIGGER name;</code> and switched with <code>ALTER TRIGGER name ENABLE/DISABLE;</code></p>
+<nav class="prevnext"><a class="prev" href="../unit-3/"><small>Previous</small>Unit 3</a></nav>
+      <p class="updated">Last updated on November 23, 2026</p>
+    </article>
+    <footer class="foot">DBMS Notes © 2026</footer>
+  </main>
+  <aside class="toc" aria-label="On this page"><p class="toc-title">On This Page</p><ul><li class="l2"><a href="#part-a-sql-concepts">Part A: SQL Concepts</a></li><li class="l2"><a href="#1-define-1-primary-key-2-foreign-key-3-unique-key-4-not-null-5-commit-6-candidat">1) Define: (1) Primary key (2) Foreign key (3) Unique Key (4) Not null (5) Commit (6) Candidate key (7) Rollback.</a></li><li class="l2"><a href="#2-define-1-weak-entity-2-data-dictionary-3-substring-4-dual-5-alter-6-truncate-7">2) Define: (1) Weak entity (2) Data Dictionary (3) Substring( ) (4) Dual (5) Alter (6) Truncate (7) Drop.</a></li><li class="l2"><a href="#3-what-is-on-delete-cascade-in-sql-explain-clearly-with-example">3) What is ON DELETE CASCADE in SQL? Explain clearly with example.</a></li><li class="l2"><a href="#4-what-is-a-join-explain-various-types-of-joins-with-example">4) What is a join? Explain various types of joins with example.</a></li><li class="l3"><a href="#1-inner-join-equi-join">1. Inner Join (Equi join)</a></li><li class="l3"><a href="#2-left-outer-join">2. Left Outer Join</a></li><li class="l3"><a href="#3-right-outer-join">3. Right Outer Join</a></li><li class="l3"><a href="#4-full-outer-join">4. Full Outer Join</a></li><li class="l3"><a href="#5-cross-join-cartesian-product">5. Cross Join (Cartesian product)</a></li><li class="l3"><a href="#6-self-join">6. Self Join</a></li><li class="l3"><a href="#7-natural-join">7. Natural Join</a></li><li class="l2"><a href="#5-explain-natural-join-operation-with-example">5) Explain natural join operation with example.</a></li><li class="l2"><a href="#6-explain-ddl-dml-dcl-with-example">6) Explain DDL, DML, DCL with example.</a></li><li class="l3"><a href="#ddl-example">DDL example</a></li><li class="l3"><a href="#dml-example">DML example</a></li><li class="l3"><a href="#dcl-example">DCL example</a></li><li class="l2"><a href="#7-write-with-example-various-built-in-string-functions">7) Write with example various built in string functions.</a></li><li class="l2"><a href="#8-explain-any-two-string-functions-in-sql">8) Explain any two string functions in SQL.</a></li><li class="l3"><a href="#1-upper">1. UPPER( )</a></li><li class="l3"><a href="#2-substr">2. SUBSTR( )</a></li><li class="l2"><a href="#9-explain-any-two-aggregate-functions-of-sql">9) Explain any two aggregate functions of SQL.</a></li><li class="l3"><a href="#1-sum">1. SUM( )</a></li><li class="l3"><a href="#2-avg">2. AVG( )</a></li><li class="l2"><a href="#10-what-is-view-give-the-advantages-of-view">10) What is View? Give the advantages of View.</a></li><li class="l3"><a href="#advantages-of-views">Advantages of views</a></li><li class="l2"><a href="#11-explain-what-is-null">11) Explain what is NULL?</a></li><li class="l2"><a href="#12-supplier-s-sname-status-city-parts-p-pname-color-weight-city-sp-s-p-quantity-">12) Supplier (S#, sname, status, city), Parts (P#, pname, color, weight, city), SP (S#, P#, quantity). Write SQL queries.</a></li><li class="l3"><a href="#a-queries">(a) Queries</a></li><li class="l3"><a href="#b-queries">(b) Queries</a></li><li class="l3"><a href="#c-queries">(c) Queries</a></li><li class="l3"><a href="#d-queries">(d) Queries</a></li><li class="l2"><a href="#13-student-rollno-name-branch-exam-rollno-subjectcode-obtainedmarks-papercode-pa">13) Student (rollno, name, branch), Exam (rollno, subject_code, obtained_marks, paper_code), Papers (paper_code, paper_setter_name, university). Write SQL.</a></li><li class="l2"><a href="#14-person-ss-name-address-car-license-year-model-accident-date-driver-damage-amo">14) Person (ss#, name, address), Car (license, year, model), Accident (date, driver, damage-amount), Owns (ss#, license), Log (license, date, driver). Write queries.</a></li><li class="l2"><a href="#15-employee-employee-name-street-city-works-employee-name-company-name-salary-co">15) Employee (employee-name, street, city), Works (employee-name, company-name, salary), Company (company-name, city), Manages (employee-name, manager-name). Write SQL.</a></li><li class="l2"><a href="#16-student-rollno-name-age-sex-city-studentmarks-rollno-sub1-sub2-sub3-total-ave">16) Student (Rollno, Name, Age, Sex, City), Student_marks (Rollno, Sub1, Sub2, Sub3, Total, Average). Write queries.</a></li><li class="l2"><a href="#17-student-studno-studname-sub1-sub2-totalmark-percentage-implement-using-sql">17) Student (stud_no, stud_name, sub1, sub2, totalmark, percentage). Implement using SQL.</a></li><li class="l3"><a href="#i-create-table-add-5-records-and-display-data">(i) Create table, add 5 records and display data</a></li><li class="l3"><a href="#ii-calculate-total-and-percentage-arrange-in-ascending-order-of-total-create-a-v">(ii) Calculate total and percentage, arrange in ascending order of total, create a view</a></li><li class="l3"><a href="#iii-update-sub1-of-studentno-111-to-50-and-recalculate">(iii) Update sub1 of student_no = 111 to 50 and recalculate</a></li><li class="l2"><a href="#18-employee-empno-empname-department-city-salary-implement-using-sql">18) Employee (emp_no, emp_name, department, city, salary). Implement using SQL.</a></li><li class="l2"><a href="#19-emp-empno-ename-jobtitle-managerno-hiredate-sal-comm-deptno-dept-deptno-dname">19) EMP (empno, ename, jobtitle, managerno, hiredate, sal, comm, deptno), DEPT (deptno, dname, loc). Answer in SQL.</a></li><li class="l2"><a href="#20-using-emp-and-dept-tables-of-q19-answer-the-following-in-sql">20) Using EMP and DEPT tables of Q19, answer the following in SQL.</a></li><li class="l2"><a href="#21-t1-empno-ename-salary-designation-t2-empno-deptno-write-queries">21) T1 (Empno, Ename, Salary, Designation), T2 (Empno, Deptno). Write queries.</a></li><li class="l2"><a href="#22-student-rollno-name-age-sex-city-studentmarks-rollno-sub1-sub2-sub3-total-ave">22) Student (RollNo, Name, Age, Sex, City), Student_marks (RollNo, Sub1, Sub2, Sub3, Total, Average). Write SQL.</a></li><li class="l2"><a href="#part-b-plsql-concepts">Part B: PL/SQL Concepts</a></li><li class="l2"><a href="#1-explain-the-advantages-of-plsql">1) Explain the advantages of PL/SQL.</a></li><li class="l3"><a href="#structure-of-a-plsql-block">Structure of a PL/SQL block</a></li><li class="l2"><a href="#2-explain-commit-and-rollback-command">2) Explain commit and rollback command.</a></li><li class="l2"><a href="#3-write-note-on-cursor-and-its-types">3) Write note on Cursor and its types.</a></li><li class="l3"><a href="#1-implicit-cursor">1. Implicit cursor</a></li><li class="l3"><a href="#2-explicit-cursor">2. Explicit cursor</a></li><li class="l3"><a href="#cursor-attributes">Cursor attributes</a></li><li class="l2"><a href="#4-write-short-note-on-database-triggers-in-plsql">4) Write short note on database triggers in PL/SQL.</a></li><li class="l3"><a href="#syntax">Syntax</a></li><li class="l3"><a href="#types-of-triggers">Types of triggers</a></li><li class="l3"><a href="#example-1-validation-before-trigger">Example 1: validation (BEFORE trigger)</a></li><li class="l3"><a href="#example-2-audit-after-trigger">Example 2: audit (AFTER trigger)</a></li></ul><p class="dl"><a href="../pdf/unit-4.pdf" download>Download PDF version</a></p></aside>
+</div>
+<div id="search" hidden><div class="box" role="dialog" aria-label="Search"><input type="search" placeholder="Search questions…" autocomplete="off" aria-label="Search"><ul id="results"></ul><p class="hint">↑↓ to navigate · Enter to open · Esc to close</p></div></div>
+<script src="../../../../assets/app.js"></script>
+</body>
+</html>
